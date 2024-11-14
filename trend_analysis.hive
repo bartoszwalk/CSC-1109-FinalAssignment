@@ -39,7 +39,7 @@ ORDER BY percent_change ASC
 LIMIT 20;
 
 -- Export the results to a local file
-INSERT OVERWRITE LOCAL DIRECTORY 'accident_trends'
+INSERT OVERWRITE LOCAL DIRECTORY 'results/accident_trends'
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 SELECT * FROM accident_trends_temp;
 

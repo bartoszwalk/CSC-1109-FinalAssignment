@@ -26,4 +26,4 @@ CREATE EXTERNAL TABLE accidents (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION '/user/hive/warehouse/accidents';
+LOCATION '/user/hive/warehouse/cleaned_accidents';

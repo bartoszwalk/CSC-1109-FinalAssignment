@@ -26,7 +26,7 @@ HAVING accident_count > 100
 ORDER BY accident_count DESC;
 
 -- Export the results to a local file
-INSERT OVERWRITE LOCAL DIRECTORY 'weather_time_analysis'
+INSERT OVERWRITE LOCAL DIRECTORY 'results/weather_time_analysis'
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 SELECT * FROM weather_time_analysis_temp;
 
