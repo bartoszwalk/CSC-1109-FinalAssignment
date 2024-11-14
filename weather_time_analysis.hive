@@ -1,0 +1,34 @@
+-- Create a temporary table for weather and time analysis
+CREATE TABLE weather_time_analysis_temp AS
+WITH time_periods AS (
+    SELECT *,
+    CASE 
+        WHEN CAST(hour AS INT) BETWEEN 5 AND 11 THEN 'Morning'
+        WHEN CAST(hour AS INT) BETWEEN 12 AND 16 THEN 'Afternoon'
+        WHEN CAST(hour AS INT) BETWEEN 17 AND 20 THEN 'Evening'
+        ELSE 'Night'
+    END as time_of_day
+    FROM accidents
+)
+SELECT 
+    time_of_day,
+    Weather_Category,
+    COUNT(*) as accident_count,
+    ROUND(AVG(Severity), 2) as avg_severity,
+    ROUND(AVG(Temperature), 2) as avg_temp,
+    ROUND(AVG(Visibility), 2) as avg_visibility,
+    ROUND(AVG(Wind_Speed), 2) as avg_wind_speed,
+    ROUND(AVG(Precipitation), 2) as avg_precipitation,
+    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage_of_total
+FROM time_periods
+GROUP BY time_of_day, Weather_Category
+HAVING accident_count > 100
+ORDER BY accident_count DESC;
+
+-- Export the results to a local file
+INSERT OVERWRITE LOCAL DIRECTORY 'weather_time_analysis'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM weather_time_analysis_temp;
+
+-- Clean up
+DROP TABLE weather_time_analysis_temp;

@@ -1,0 +1,29 @@
+-- Drop existing table if any
+DROP TABLE IF EXISTS accidents;
+
+-- Create external table pointing to HDFS location
+CREATE EXTERNAL TABLE accidents (
+    ID STRING,
+    Source STRING,
+    Severity INT,
+    Start_Time STRING,
+    End_Time STRING,
+    year STRING,
+    hour STRING,
+    Start_Lat DOUBLE,
+    Start_Lng DOUBLE,
+    City STRING,
+    State STRING,
+    Temperature DOUBLE,
+    Humidity DOUBLE,
+    Pressure DOUBLE,
+    Visibility DOUBLE,
+    Wind_Speed DOUBLE,
+    Precipitation DOUBLE,
+    Weather_Category STRING,
+    Traffic_Signal BOOLEAN
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/user/hive/warehouse/accidents';

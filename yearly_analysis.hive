@@ -1,0 +1,32 @@
+-- Create a temporary table to store the results
+CREATE TABLE covid_analysis_temp AS
+WITH yearly_counts AS (
+    SELECT 
+        year,
+        State,
+        COUNT(*) as accident_count,
+        LAG(COUNT(*), 1) OVER (PARTITION BY State ORDER BY year) as prev_year_count
+    FROM accidents
+    GROUP BY year, State
+)
+SELECT 
+    year,
+    State,
+    accident_count,
+    prev_year_count,
+    ROUND(((accident_count - prev_year_count) / prev_year_count) * 100, 2) as yoy_change_percent,
+    CASE 
+        WHEN year = '2020' AND ((accident_count - prev_year_count) / prev_year_count) < 0 
+        THEN 'COVID Impact Detected'
+        ELSE 'Normal Variation'
+    END as covid_impact
+FROM yearly_counts
+ORDER BY State, year;
+
+-- Export the results to a local file
+INSERT OVERWRITE LOCAL DIRECTORY 'results/covid_analysis'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM covid_analysis_temp;
+
+-- Clean up
+DROP TABLE covid_analysis_temp;
