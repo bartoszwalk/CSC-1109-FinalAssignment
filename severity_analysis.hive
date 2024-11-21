@@ -1,5 +1,4 @@
 -- Create a temporary table for severity patterns analysis
-CREATE TABLE severity_patterns_temp AS
 WITH severity_stats AS (
     SELECT 
         State,
@@ -11,20 +10,12 @@ WITH severity_stats AS (
     GROUP BY State, City
     HAVING total_accidents > 500
 )
+
+-- Can replace the DESC with ASC for inverse and see 10 least severe cities
 SELECT 
     State,
     City,
-    total_accidents,
-    severe_accidents,
-    ROUND(avg_severity, 2) as avg_severity_score,
-    ROUND((severe_accidents * 100.0 / total_accidents), 2) as severe_accident_percentage,
+    ROUND((severe_accidents * 100.0 / total_accidents), 2) as severe_accident_percentage
 FROM severity_stats
-ORDER BY severe_accident_percentage DESC;
-
--- Export the results to a local file
-INSERT OVERWRITE LOCAL DIRECTORY 'results/severity_patterns'
-ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
-SELECT * FROM severity_patterns_temp;
-
--- Clean up
-DROP TABLE severity_patterns_temp;
+ORDER BY severe_accident_percentage ASC
+LIMIT 10;

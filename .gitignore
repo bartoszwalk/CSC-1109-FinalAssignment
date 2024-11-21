@@ -3,3 +3,5 @@ results/cleaned_accidents
 metastore_db
 derby.log
 .DS_Store
+iframe_figures/
+.ipynb_checkpoints/
