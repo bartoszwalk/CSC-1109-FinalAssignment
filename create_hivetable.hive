@@ -9,6 +9,7 @@ CREATE EXTERNAL TABLE accidents (
     Start_Time STRING,
     End_Time STRING,
     year STRING,
+    month STRING,
     hour STRING,
     Start_Lat DOUBLE,
     Start_Lng DOUBLE,

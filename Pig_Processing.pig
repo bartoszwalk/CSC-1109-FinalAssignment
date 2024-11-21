@@ -48,12 +48,18 @@ raw_accidents = LOAD 'Data/US_Accidents_March23.csv' USING PigStorage(',') AS (
     Astronomical_Twilight:chararray
 );
 
--- Extract year and hour from timestamps using SUBSTRING
+-- Extract year,month and hour from timestamps using SUBSTRING
 accidents_with_time = FOREACH raw_accidents GENERATE
     ID,
+    Source,
     Severity,
-    SUBSTRING(Start_Time, 0, 4) AS year,
-    SUBSTRING(Start_Time, 11, 13) AS hour,  -- Changed this line to extract hour using SUBSTRING
+    Start_Time,
+    End_Time,
+    SUBSTRING(Start_Time, 0, 4) AS year,       -- Extract year
+    SUBSTRING(Start_Time, 5, 7) AS month,     -- Extract month
+    SUBSTRING(Start_Time, 11, 13) AS hour,    -- Extract hour
+    Start_Lat,
+    Start_Lng,
     City,
     State,
     Temperature,
@@ -71,9 +77,15 @@ filtered_years = FILTER accidents_with_time BY year >= '2017' AND year <= '2022'
 -- Handle missing numerical values
 cleaned_accidents = FOREACH filtered_years GENERATE
     ID,
+    Source,
     Severity,
+    Start_Time,
+    End_Time,
     year,
+    month,
     hour,
+    Start_Lat,
+    Start_Lng,
     City,
     State,
     (Temperature IS NULL ? 0.0 : Temperature) AS Temperature,
@@ -88,9 +100,15 @@ cleaned_accidents = FOREACH filtered_years GENERATE
 -- Group weather conditions to standardize categories
 normalized_weather = FOREACH cleaned_accidents GENERATE
     ID,
+    Source,
     Severity,
+    Start_Time,
+    End_Time,
     year,
+    month,
     hour,
+    Start_Lat,
+    Start_Lng,
     City,
     State,
     Temperature,
