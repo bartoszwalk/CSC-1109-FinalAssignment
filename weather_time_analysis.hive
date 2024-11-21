@@ -18,11 +18,9 @@ SELECT
     ROUND(AVG(Temperature), 2) as avg_temp,
     ROUND(AVG(Visibility), 2) as avg_visibility,
     ROUND(AVG(Wind_Speed), 2) as avg_wind_speed,
-    ROUND(AVG(Precipitation), 2) as avg_precipitation,
-    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage_of_total
+    ROUND(AVG(Precipitation), 2) as avg_precipitation
 FROM time_periods
 GROUP BY time_of_day, Weather_Category
-HAVING accident_count > 100
 ORDER BY accident_count DESC;
 
 -- Export the results to a local file

@@ -127,6 +127,9 @@ normalized_weather = FOREACH cleaned_accidents GENERATE
         WHEN LOWER(Weather_Condition) MATCHES '.*(dust|sand).*' THEN 'Dust/Sand'
         WHEN LOWER(Weather_Condition) MATCHES '.*haze.*' THEN 'Haze'
         WHEN LOWER(Weather_Condition) MATCHES '.*(thunder|t-storm).*' THEN 'Thunderstorm'
+        WHEN LOWER(Weather_Condition) MATCHES '.*drizzle.*' THEN 'Drizzle'
+        WHEN LOWER(Weather_Condition) MATCHES '.*(tornado|volcanic).*' THEN 'Extreme Weather'
+        WHEN LOWER(Weather_Condition) MATCHES '.*(freezing|pellets).*' THEN 'Freezing Rain'
         ELSE 'Other'
     END AS Weather_Category,
     Traffic_Signal;
