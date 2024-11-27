@@ -1,0 +1,6 @@
+INSERT OVERWRITE LOCAL DIRECTORY 'results/monthly_counts'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT month, CEIL(COUNT(*) / COUNT(DISTINCT year)) AS avg_accident_count
+FROM accidents
+GROUP by month
+ORDER BY month;
