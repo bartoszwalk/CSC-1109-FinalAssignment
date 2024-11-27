@@ -19,3 +19,5 @@ SELECT
 FROM severity_stats
 ORDER BY severe_accident_percentage ASC
 LIMIT 10;
+
+DROP table severity_stats;
