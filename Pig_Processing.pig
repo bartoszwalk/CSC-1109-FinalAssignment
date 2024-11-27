@@ -51,15 +51,10 @@ raw_accidents = LOAD 'Data/US_Accidents_March23.csv' USING PigStorage(',') AS (
 -- Extract year,month and hour from timestamps using SUBSTRING
 accidents_with_time = FOREACH raw_accidents GENERATE
     ID,
-    Source,
     Severity,
-    Start_Time,
-    End_Time,
-    SUBSTRING(Start_Time, 0, 4) AS year,       -- Extract year
+    SUBSTRING(Start_Time, 0, 4) AS year,      -- Extract year
     SUBSTRING(Start_Time, 5, 7) AS month,     -- Extract month
     SUBSTRING(Start_Time, 11, 13) AS hour,    -- Extract hour
-    Start_Lat,
-    Start_Lng,
     City,
     State,
     Temperature,
@@ -75,40 +70,22 @@ accidents_with_time = FOREACH raw_accidents GENERATE
 filtered_years = FILTER accidents_with_time BY year >= '2017' AND year <= '2022';
 
 -- Handle missing numerical values
-cleaned_accidents = FOREACH filtered_years GENERATE
-    ID,
-    Source,
-    Severity,
-    Start_Time,
-    End_Time,
-    year,
-    month,
-    hour,
-    Start_Lat,
-    Start_Lng,
-    City,
-    State,
-    (Temperature IS NULL ? 0.0 : Temperature) AS Temperature,
-    (Humidity IS NULL ? 0.0 : Humidity) AS Humidity,
-    (Pressure IS NULL ? 0.0 : Pressure) AS Pressure,
-    (Visibility IS NULL ? 0.0 : Visibility) AS Visibility,
-    (Wind_Speed IS NULL ? 0.0 : Wind_Speed) AS Wind_Speed,
-    (Precipitation IS NULL ? 0.0 : Precipitation) AS Precipitation,
-    (Weather_Condition IS NULL ? 'Unknown' : Weather_Condition) AS Weather_Condition,
-    Traffic_Signal;
+cleaned_accidents = FILTER filtered_years BY 
+    (Temperature IS NOT NULL) AND
+    (Humidity IS NOT NULL) AND
+    (Pressure IS NOT NULL) AND
+    (Visibility IS NOT NULL) AND
+    (Wind_Speed IS NOT NULL) AND
+    (Precipitation IS NOT NULL) AND
+    (Weather_Condition IS NOT NULL);
 
 -- Group weather conditions to standardize categories
 normalized_weather = FOREACH cleaned_accidents GENERATE
     ID,
-    Source,
     Severity,
-    Start_Time,
-    End_Time,
     year,
     month,
     hour,
-    Start_Lat,
-    Start_Lng,
     City,
     State,
     Temperature,
